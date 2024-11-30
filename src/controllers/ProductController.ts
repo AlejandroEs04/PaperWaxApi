@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import Product from "../models/Product"
+import { Server } from 'socket.io'
 
 export class ProductController {
     static getAllProduct = async(req: Request, res: Response) => {
@@ -17,7 +18,11 @@ export class ProductController {
         const product = new Product(req.body)
 
         try {
-            await product.create(product)
+            const response = await product.create(product)
+
+            // const io: Server = req['io'];
+            // io.emit('paperTypeAdded', newPaperType);
+
             res.send('Producto registrado correctamente')
             return
         } catch (error) {
@@ -31,7 +36,8 @@ export class ProductController {
         const { id } = req.params
 
         try {
-            await product.update(id, product)
+            const response = await product.update(id, product)
+            console.log(response)
             res.send('Producto actualizado correctamente')
             return
         } catch (error) {
