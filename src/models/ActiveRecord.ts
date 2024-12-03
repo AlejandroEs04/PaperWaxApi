@@ -8,7 +8,7 @@ export abstract class ActiveRecord<T> {
         this.tableName = tableName;
     }
 
-    private async getRequest(): Promise<Request> {
+    public async getRequest(): Promise<Request> {
         const pool = await getPool();
         return pool.request();
     }

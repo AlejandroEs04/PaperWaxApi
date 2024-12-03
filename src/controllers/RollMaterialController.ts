@@ -9,6 +9,7 @@ export class RollMaterialController {
             res.json(rollsMaterial)
             return
         } catch (error) {
+            console.log(error)
             res.status(500).send('Hubo un error al obtener la información')
             return
         }
@@ -18,7 +19,7 @@ export class RollMaterialController {
         const rollMaterial = new RollMaterial(req.body)
 
         try {
-            const response = await rollMaterial.create(rollMaterial)
+            const response = await rollMaterial.createWithId(rollMaterial)
 
             const io: Server = req['io'];
             io.emit('rollMaterialAdded', response);
@@ -33,10 +34,10 @@ export class RollMaterialController {
 
     static updateRollMaterial = async(req: Request, res: Response) => {
         const rollMaterial = new RollMaterial(req.body)
-        const { id } = req.params
+        const { id, lot } = req.params
 
         try {
-            const response = await rollMaterial.update(id, rollMaterial)
+            const response = await rollMaterial.updateWithId(+id, lot, rollMaterial)
             console.log(response)
             res.send('Bobinado actualizado correctamente')
             return
