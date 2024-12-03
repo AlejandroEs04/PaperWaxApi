@@ -8,7 +8,7 @@ export abstract class ActiveRecord<T> {
         this.tableName = tableName;
     }
 
-    private async getRequest(): Promise<Request> {
+    public async getRequest(): Promise<Request> {
         const pool = await getPool();
         return pool.request();
     }
@@ -51,15 +51,16 @@ export abstract class ActiveRecord<T> {
         }
     }
 
-    async create(item: Omit<T, "id">): Promise<void> {
+    async create(item: Omit<T, "id">): Promise<T> {
         const keys = Object.keys(item).filter((key) => key !== "tableName" && key !== "id");
         const values = keys.map((key) => `@${key}`).join(", ");
-        const query = `INSERT INTO [paperWaxDb].[${this.tableName}] (${keys.join(", ")}) VALUES (${values})`;
+        const query = `INSERT INTO [paperWaxDb].[${this.tableName}] (${keys.join(", ")}) OUTPUT INSERTED.id VALUES (${values})`;
     
         try {
             const request = await this.getRequest();
             keys.forEach((key) => request.input(key, (item as any)[key]));
-            await request.query(query);
+            const result = await request.query(query);
+            return await this.getById(result.recordset[0].id)
         } catch (error) {
             console.error(error);
             throw new Error("Error creating record");

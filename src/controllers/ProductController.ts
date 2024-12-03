@@ -20,8 +20,8 @@ export class ProductController {
         try {
             const response = await product.create(product)
 
-            // const io: Server = req['io'];
-            // io.emit('paperTypeAdded', newPaperType);
+            const io: Server = req['io'];
+            io.emit('paperTypeAdded', response);
 
             res.send('Producto registrado correctamente')
             return

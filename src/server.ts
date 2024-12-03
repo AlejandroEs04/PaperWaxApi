@@ -7,7 +7,8 @@ import cors from 'cors'
 import { corsOptions } from './config/cors'
 
 import paperTypeRoutes from './routes/PaperTypeRoutes'
-import productRoutes from './routes/ProductController'
+import productRoutes from './routes/ProductRoutes'
+import rollMaterialRoutes from './routes/RollMaterialRoutes'
 import registerSocketEvents from './sockets';
 
 dotenv.config()
@@ -22,7 +23,7 @@ const io = new Server(httpServer, {
 });
 
 app.use((req, res, next) => {
-    req['io'] = io; // Añadimos io al objeto req
+    req['io'] = io; 
     next();
 });
 
@@ -33,6 +34,7 @@ app.use(cors(corsOptions))
 
 app.use('/api/papers', paperTypeRoutes)
 app.use('/api/products', productRoutes)
+app.use('/api/roll-materials', rollMaterialRoutes)
 
 registerSocketEvents(io)
 
